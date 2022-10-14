@@ -27,6 +27,13 @@ class Payload(BaseModel):
     password : str | None
     car_rc : str | None
 
+class BookingPayload(BaseModel):
+    email : str
+    start_time : datetime.datetime | None
+    end_time : datetime.datetime
+    slot_name : str | None
+
+
 def get_jwt_token(email: str):
     return jwt.encode({ "email" : email ,
        'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes= EXPIRY_TIME)
@@ -38,11 +45,33 @@ def check_jwt_token(token : str = Header(None)):
     except:
         raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
 
+def book_slot(email, start_time, end_time, slot_name, later):
+    print(email, start_time, end_time, slot_name, later)
+
+def get_bookings(email):
+    print(email)
+
+def get_layouts(email):
+    print(email)
+
+@app.post("/bookings", dependencies=[Depends(check_jwt_token)])
+def slot_bookings(payload: BookingPayload):
+    later = False
+    if payload.start_time != None :
+        later = True
+    return book_slot(payload.email,
+                       payload.start_time,
+                       payload.end_time,
+                       payload.slot_name,
+                       later)
+
 @app.get("/bookings/{user_id}", dependencies=[Depends(check_jwt_token)])
-def get_bookings(user_id: str):
-    return {
-        "user_id" : user_id
-    }
+def get_booking(user_id: str):
+    return get_bookings(user_id)
+
+@app.get("/layout/{office_id}", dependencies=[Depends(check_jwt_token)])
+def get_layout(office_id: str):
+    return get_layouts(office_id)
 
 @app.get("/login", status_code=200)
 def login(payload: Payload):

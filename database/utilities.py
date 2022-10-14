@@ -4,6 +4,7 @@ from sqlalchemy import  create_engine
 from dotenv import load_dotenv
 import sys
 import os
+import pymysql
 
 
 load_dotenv("db.env")
@@ -23,7 +24,7 @@ def reset_db():
         #pdb.set_trace()
         if database_exists(SERVER_URL):
             drop_database(SERVER_URL)
-        
+
         create_database(SERVER_URL)
         engine = create_engine(SERVER_URL,echo = True,future = True)
         Base.metadata.create_all(bind = engine)
@@ -31,7 +32,7 @@ def reset_db():
     except Exception as e:
             print(e)
 
-        
+
 if(__name__ == "__main__"):
 
     if(len(sys.argv)<=1 or len(sys.argv)>2):

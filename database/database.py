@@ -1,10 +1,11 @@
 from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import Session
-from models import *
+from .models import *
 from dotenv import load_dotenv
 import bcrypt
 import os
 import pdb
+import pymysql
 
 # load_dotenv("db.env")
 DB_PROTOCOL = os.getenv("DB_PROTOCOL")
@@ -12,6 +13,8 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 DB_HOST = os.getenv("DB_HOST")
+
+# pdb.set_trace()
 
 SERVER_URL = f"{DB_PROTOCOL}{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
@@ -55,9 +58,3 @@ def register_car(email,vehicle_rc):
     vehicle_obj = Vehicle(owner = email, rc = vehicle_rc)
     session.add(vehicle_obj)
     session.commit()
-
-
-print(create_user("Alok@gmail.com","alokalok"))
-
-print(user_exists("Alok@gmail.com","alokalok"))
-

@@ -4,6 +4,7 @@ from sqlalchemy import Integer, DateTime
 from sqlalchemy import String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
+import pymysql
 
 
 Base = declarative_base()
@@ -14,12 +15,12 @@ class User(Base):
 
       email = Column(String(100), primary_key = True)
       password = Column(String(255),nullable = True)
-      
+
       def __repr__(self):
           return f"{self.email}  {self.password} "
 
 class Office(Base):
-    
+
       __tablename__ = 'offices'
 
       oid = Column(Integer, primary_key = True)
@@ -48,7 +49,7 @@ class Vehicle(Base):
       __tablename__ = "vehicles"
       rc = Column(String(20),primary_key = True)
       owner = Column(String(100),ForeignKey("users.email"),nullable = False)
-      
+
       def __repr__(self):
           return f"{self.rc} {self.owner} "
 class Booking(Base):
