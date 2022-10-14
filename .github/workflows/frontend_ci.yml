@@ -2,8 +2,6 @@ name: BookMySpot Workflow
 
 on:
   push:
-    branches:
-      -app-development
 
 jobs:      
   build:
