@@ -45,10 +45,6 @@ def create_user(email: str, password: str):
 def register_car(email: str, car_rc: str):
     print(f"User Created! {email} {car_rc}", email, car_rc)
 
-@app.get("/login/")
-async def get_cookie(body: str | None = Cookie(default=None)):
-    return body
-
 def get_jwt_token(email: str):
     return jwt.encode({ "email" : email , 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes= EXPIRY_TIME)}, SECRET_KEY, )
 
