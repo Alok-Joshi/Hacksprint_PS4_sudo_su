@@ -56,8 +56,66 @@ def register_car(email,vehicle_rc):
     session.add(vehicle_obj)
     session.commit()
 
+def booking_exists(email,vehicle_rc):
+    """ Checks if the followng email vehicle_rc combination has a booking or not """
+    pass
 
-print(create_user("Alok@gmail.com","alokalok"))
+def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,office_id = 1,later = False)
+    """ 
+    Books the given slot
+    return dictionary mentioning if given slot was alloted (selected_slot:False)
 
-print(user_exists("Alok@gmail.com","alokalok"))
+    """
+    if(not later):
+        session = Session(engine)
+        #first check if the given slot is available
+        db_output = session.query(Booking).filter(Booking.slot_name == slot_name).all()
+        if(len(db_output) == 0):
+            #this implies this particular slot is not booked yet. Now we book it by updating the booking table
+            booked_slot = Booking(slot_name = slot_name,email = email,vehicle_rc = vehicle_rc,layout_id =layout_id, office_id =office_id,start_time = start_time,end_time = end_time)
+            session.add(booked_slot)
+            session.commit()
+
+            return_dict = {"slot_name":slot_name,"email":email,"vehicle_rc":vehicle_rc,"layout_id":layout_id,"start_time":start_time,"end_time":end_time,"office_id":office_id,"later":later}
+            return return_dict
+
+    else:
+       session = Session(engine) 
+       
+       #step 1: first check absolutely free time slots. Those which are not booked FOR ANY TIME SLOT.
+       result = engine.execute("select * from slots right outer join booking on (slots.office_id = booking.office_id and slots.slot_name = booking.slot_name and booking.layout_id = slots.layout_id) where b(booking.office_id is NULL and booking.slot_name is NULL and booking.layout_id is NULL);").all()
+
+       if(len(result)>0):
+           #this implies there are slots are absolutely free. Allocate any one of this
+
+           selected_slot = tuple(result[0])
+           booked_slot = Booking(email = selected_slot[0],vehicle_rc = selected_slot[1], layout_id = selected_slot[2], slot_name = selected_slot[3],office_id = selected_slot[4], start_time = start_time, end_time = end_time)
+           session.add(booked_slot)
+           return_dict = {"slot_name":selected_slot[3],"email":selected_slot[0],"vehicle_rc":selected_slot[1],"layout_id":selected_slot[2],"start_time":start_time,"end_time":end_time,"office_id":selected_slot[4],"later":later}
+
+           return return_dict
+        
+       else:
+            pass
+           #This implies the there is not a single slot which is not booked. Now we need to check the booking table for existing slots which are free in the given time 
+           #refer to algo given in the notebook
+           #session = Session(engine)
+           #db_output = session.query(Booking).filter(Booking
+
+
+        
+        
+
+
+
+    
+
+
+
+
+
+
+
+
+    
 
