@@ -15,7 +15,7 @@ class BMSDateTimePicker extends StatefulWidget {
 }
 
 class _BMSDateTimePickerState extends State<BMSDateTimePicker> {
-  TextEditingController _verbalDate = TextEditingController();
+  final _verbalDate = TextEditingController();
 
   void dateSelectorDialoge() async {
     DateTime? pickedDate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime(DateTime.now().year, DateTime.now().month + 1));
@@ -49,31 +49,29 @@ class _BMSDateTimePickerState extends State<BMSDateTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SizedBox(
-        width: 343,
-        child: TextFormField(
-          controller: _verbalDate,
-          onTap: () {
-            dateSelectorDialoge();
-          },
-          decoration: InputDecoration(
-              labelText: widget.label,
-              hintText: widget.hint,
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                      color: Color(button_primary_color,),
-                      width: 2
-                  )
-              ),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                      color: Color(button_primary_color)
-                  )
-              )
-          ),
+    return SizedBox(
+      width: 343,
+      child: TextFormField(
+        controller: _verbalDate,
+        onTap: () {
+          dateSelectorDialoge();
+        },
+        decoration: InputDecoration(
+            labelText: widget.label,
+            hintText: widget.hint,
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                    color: Color(button_primary_color,),
+                    width: 2
+                )
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                    color: Color(button_primary_color)
+                )
+            )
         ),
       ),
     );

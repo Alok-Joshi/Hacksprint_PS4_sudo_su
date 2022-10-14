@@ -1,3 +1,4 @@
+import 'package:bookmyspot/constrains.dart';
 import 'package:flutter/material.dart';
 
 class ButtonText extends StatelessWidget {
@@ -11,6 +12,27 @@ class ButtonText extends StatelessWidget {
         color: color ?? Colors.white,
         fontSize: 24,
         fontWeight: FontWeight.w700
+      ),
+    );
+  }
+}
+
+
+class TabBarText extends StatelessWidget {
+  TabBarText({Key? key, required this.text}) : super(key: key);
+  String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Text(
+          text,
+        style: TextStyle(
+          fontSize: 23,
+          color: Colors.white,
+          fontWeight: FontWeight.w700
+        ),
       ),
     );
   }
