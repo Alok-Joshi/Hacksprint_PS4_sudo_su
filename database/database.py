@@ -56,9 +56,6 @@ def register_car(email,vehicle_rc):
     session.add(vehicle_obj)
     session.commit()
 
-def booking_exists(email,vehicle_rc):
-    """ Checks if the followng email vehicle_rc combination has a booking or not """
-    pass
 
 def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,office_id = 1,later = False)
     """ 

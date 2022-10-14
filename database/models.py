@@ -56,6 +56,7 @@ class Booking(Base):
       __tablename__ = 'booking'
 
       email = Column(String(100), ForeignKey("users.email"),nullable = False, primary_key = True)
+      vehicle_rc = Column(String(100),ForeignKey("vehicles.rc"),primary_key = True)
       layout_id = Column(Integer)
       slot_name = Column(Integer)
       office_id = Column(Integer)
