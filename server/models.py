@@ -1,4 +1,3 @@
-from datetime import date
 from sqlalchemy import Column, ForeignKeyConstraint, UniqueConstraint, create_engine
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer, DateTime
@@ -10,7 +9,7 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-class users(Base):
+class User(Base):
       __tablename__ = 'users'
 
       uid = Column(Integer, primary_key = True)
@@ -19,7 +18,7 @@ class users(Base):
       office_id = Column(Integer, ForeignKey("offices.oid"),nullable = False)
 
 
-class offices(Base):
+class Office(Base):
     
       __tablename__ = 'offices'
 
@@ -28,14 +27,14 @@ class offices(Base):
       city  = Column(String(30))
       state = Column(String(30))
 
-class layouts(Base):
+class Layout(Base):
 
       __tablename__ = 'layouts'
 
       layout_id = Column(Integer, primary_key = True)
       office_id = Column(Integer, ForeignKey("offices.oid"), nullable = False,primary_key = True)
 
-class slots(Base):
+class Slot(Base):
 
       __tablename__ = 'slots'
 
@@ -44,8 +43,12 @@ class slots(Base):
 
 
 
+class Vehicle(Base):
+      __tablename__ = "vehicles"
+      rc = Column(String(20),primary_key = True)
+      owner = Column(Integer,ForeignKey("users.uid"),nullable = False)
       
-class booking(Base):
+class Booking(Base):
 
       __tablename__ = 'booking'
 
@@ -54,10 +57,6 @@ class booking(Base):
       slot_name = Column(Integer)
       start_time = Column(DateTime)
       end_time = Column(DateTime)
-      __table_args__ = (ForeignKeyConstraint([layout_id,slot_name],[slots.layout_id,slots.slot_name]),{})
+      __table_args__ = (ForeignKeyConstraint([layout_id,slot_name],[Slot.layout_id,Slot.slot_name]),{})
 
 
-
-if(__name__  == "__main__"):
-    engine = create_engine("mysql+pymysql://root:password@localhost/feature_db",echo = True, future = True) #TODO: hardcoded for now, shall be changed later
-    Base.metadata.create_all(bind =engine)
