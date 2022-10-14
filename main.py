@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Cookie, HTTPException, Depends, Response
+from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import bcrypt
@@ -46,11 +46,13 @@ def register_car(email: str, car_rc: str):
     print(f"User Created! {email} {car_rc}", email, car_rc)
 
 def get_jwt_token(email: str):
-    return jwt.encode({ "email" : email , 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes= EXPIRY_TIME)}, SECRET_KEY, )
+    return jwt.encode({ "email" : email ,
+       'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes= EXPIRY_TIME)
+    }, SECRET_KEY, )
 
-def check_jwt_token(jwt_key : str = Cookie(None)):
+def check_jwt_token(token : str = Header(None)):
     try:
-        return jwt.decode(jwt_key, SECRET_KEY, algorithms=["HS256"])
+        return jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     except:
         raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
 
@@ -61,27 +63,37 @@ def get_bookings(user_id: str):
     }
 
 @app.get("/login", status_code=200)
-def login(payload: Payload, response: Response):
+def login(payload: Payload):
     if payload.password == None:
         raise HTTPException(status_code=404, detail="No Password Provided")
     else:
         if user_exists(payload.email, payload.password):
-            response.set_cookie(key="jwt_key", value=get_jwt_token(payload.email))
-            return { "message" : "Logged In Succesfully" }
+            return {
+                "message" : "Logged In Succesfully",
+                "token" : get_jwt_token(payload.email)
+            }
         else:
             raise HTTPException(status_code=404, detail="User Not Found")
 
 @app.post("/register/{entity}", status_code = 201)
-def register(payload: Payload, entity:str, response : Response):
+def register(payload: Payload, entity:str):
     if entity == "user" and payload.password != None :
         if user_exists(payload.email, payload.password):
             raise HTTPException(status_code=404, detail="User Already exists")
         else:
-            create_user(payload.email, payload.password)
-            response.set_cookie(key="jwt_key", value=get_jwt_token(payload.email))
-            return { "message" : "User was registered Succesfully" }
+            try :
+                create_user(payload.email, payload.password)
+            except:
+                raise HTTPException(status_code=501, detail="Internal Server Error")
+            return {
+                "message" : "User was registered Succesfully",
+                "token" : get_jwt_token(payload.email)
+            }
     elif entity == "car" and payload.car_rc != None :
         if car_exists(payload.email, payload.car_rc):
             raise HTTPException(status_code=404, detail="Car {car} has already been registered!".format(car = payload.car_rc))
         else:
-            return { "message" : "Car was registered to {email}".format(email = payload.email) }
+            return {
+                "message" : "Car was registered to {email} Succesfuly".format(email = payload.email),
+                "token" : get_jwt_token(payload.email)
+            }
