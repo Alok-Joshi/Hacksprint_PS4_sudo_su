@@ -12,11 +12,12 @@ Base = declarative_base()
 class User(Base):
       __tablename__ = 'users'
 
-      uid = Column(Integer, primary_key = True)
-      email = Column(String(30), unique = True)
+      email = Column(String(100), primary_key = True)
       password = Column(String(30),nullable = True)
-      office_id = Column(Integer, ForeignKey("offices.oid"),nullable = False)
-
+      office_id = Column(Integer, ForeignKey("offices.oid"),nullable = False,server_default ="1")
+      
+      def __repr__(self):
+          return f"{self.email}  {self.password} {self.office_id} "
 
 class Office(Base):
     
@@ -46,13 +47,15 @@ class Slot(Base):
 class Vehicle(Base):
       __tablename__ = "vehicles"
       rc = Column(String(20),primary_key = True)
-      owner = Column(Integer,ForeignKey("users.uid"),nullable = False)
+      owner = Column(String(100),ForeignKey("users.email"),nullable = False)
       
+      def __repr__(self):
+          return f"{self.rc} {self.owner} "
 class Booking(Base):
 
       __tablename__ = 'booking'
 
-      uid = Column(Integer, ForeignKey("users.uid"),nullable = False, primary_key = True)
+      email = Column(String(100), ForeignKey("users.email"),nullable = False, primary_key = True)
       layout_id = Column(Integer)
       slot_name = Column(Integer)
       start_time = Column(DateTime)
