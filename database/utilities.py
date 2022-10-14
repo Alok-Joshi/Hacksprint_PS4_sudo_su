@@ -39,17 +39,22 @@ def insert_dummy():
 
     parking_lot = ParkingLot(pl_id = 1, name = "Kothrud Parking Lot", city = "Pune",state = "MH")
     sample_layout = Layout(layout_id = 0,pl_id = 1)
+    sample_layout1 = Layout(layout_id = 1,pl_id = 1)
     slots_elements = []
 
     for i in range(5):
         slots_elements.append(Slot(layout_id = 0,slot_name = i,pl_id = 1))
+    for i in range(5):
+        slots_elements.append(Slot(layout_id = 1,slot_name = i,pl_id = 1))
 
     session.add(parking_lot)
     session.commit()
     session.add(sample_layout)
+    session.add(sample_layout1)
     session.commit()
     session.add_all(slots_elements)
     session.commit()
+
 
         
 if(__name__ == "__main__"):
