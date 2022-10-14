@@ -13,11 +13,10 @@ class User(Base):
       __tablename__ = 'users'
 
       email = Column(String(100), primary_key = True)
-      password = Column(String(30),nullable = True)
-      office_id = Column(Integer, ForeignKey("offices.oid"),nullable = False,server_default ="1")
+      password = Column(String(255),nullable = True)
       
       def __repr__(self):
-          return f"{self.email}  {self.password} {self.office_id} "
+          return f"{self.email}  {self.password} "
 
 class Office(Base):
     
@@ -41,6 +40,7 @@ class Slot(Base):
 
       layout_id = Column(Integer, ForeignKey("layouts.layout_id"),nullable = False,primary_key = True)
       slot_name = Column(Integer, primary_key = True,nullable = False)
+      office_id = Column(Integer, ForeignKey("offices.oid"), nullable = False,primary_key = True)
 
 
 
@@ -58,8 +58,10 @@ class Booking(Base):
       email = Column(String(100), ForeignKey("users.email"),nullable = False, primary_key = True)
       layout_id = Column(Integer)
       slot_name = Column(Integer)
+      office_id = Column(Integer)
+
       start_time = Column(DateTime)
       end_time = Column(DateTime)
-      __table_args__ = (ForeignKeyConstraint([layout_id,slot_name],[Slot.layout_id,Slot.slot_name]),{})
+      __table_args__ = (ForeignKeyConstraint([layout_id,slot_name,office_id],[Slot.layout_id,Slot.slot_name,Slot.office_id]),{})
 
 
