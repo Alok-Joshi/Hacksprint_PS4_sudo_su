@@ -42,7 +42,7 @@ def car_exists(email,vehicle_rc):
 def create_user(email,password):
     """ Creates a new user with email and password. """
     session = Session(engine)
-    password = bcrypt.hashpw(password.decode(), SALT)
+    password = bcrypt.hashpw(password.encode("utf-8"), SALT)
     user_obj = User(email  = email,password = password.decode())
     session.add(user_obj)
     session.commit()
