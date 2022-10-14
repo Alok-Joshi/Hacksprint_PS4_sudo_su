@@ -1,8 +1,18 @@
 from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import Session
 from models import *
-import pprint
-SERVER_URL = "mysql+pymysql://root:password@localhost/feature_db" #hard coded for now
+from dotenv import load_dotenv
+import os
+
+load_dotenv("db.env")
+DB_PROTOCOL = os.getenv("DB_PROTOCOL")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+
+SERVER_URL = f"{DB_PROTOCOL}{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+
 engine = create_engine(SERVER_URL,pool_size = 20)
 
 def user_exists(email, password):

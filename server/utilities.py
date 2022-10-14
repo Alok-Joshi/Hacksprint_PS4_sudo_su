@@ -1,9 +1,21 @@
 from models import Base
 from sqlalchemy_utils import database_exists, create_database,drop_database
 from sqlalchemy import  create_engine
+from dotenv import load_dotenv
 import sys
+import os
 
-SERVER_URL = "mysql+pymysql://root:password@localhost/feature_db"
+
+load_dotenv("db.env")
+
+DB_PROTOCOL = os.getenv("DB_PROTOCOL")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+
+SERVER_URL = f"{DB_PROTOCOL}{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+
 
 def reset_db():
     """ Drops the existing database, creates the new database with the new schema in models """
