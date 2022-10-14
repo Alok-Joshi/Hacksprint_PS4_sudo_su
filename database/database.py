@@ -57,6 +57,14 @@ def register_car(email,vehicle_rc):
     vehicle_obj = Vehicle(owner = email, rc = vehicle_rc)
     session.add(vehicle_obj)
     session.commit()
+def get_car(email):
+    session = Session(engine)
+    vehicles = session.query(Vehicle).filter(Vehicle.owner == email).all()
+    vehicle_rc = []
+    for vehicle in vehicles:
+        vehicle_rc.append(vehicle.rc)
+
+    return vehicle_rc
 
 def is_booked(slot_name,pl_id,layout_id):
     session = Session(engine)
