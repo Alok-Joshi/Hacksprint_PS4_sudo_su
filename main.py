@@ -33,7 +33,6 @@ class BookingPayload(BaseModel):
     end_time : datetime.datetime
     slot_name : str | None
 
-
 def get_jwt_token(email: str):
     return jwt.encode({ "email" : email ,
        'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes= EXPIRY_TIME)
@@ -45,6 +44,20 @@ def check_jwt_token(token : str = Header(None)):
     except:
         raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
 
+def convert_layout(layout):
+    dic = {}
+    for i in range(len(layout)):
+        for j in range(len(layout[i])):
+            key = "layout"+str(i)
+            if key not in dic.keys():
+                dic[key] = []
+            if layout[i][j] != 0:
+                dic[key].append(str(chr(i + ord('A'))) + str(layout[i][j]))
+            else:
+                dic[key].append(0)
+
+    return dic
+
 def book_slot(email, start_time, end_time, slot_name, later):
     print(email, start_time, end_time, slot_name, later)
 
@@ -54,7 +67,8 @@ def get_bookings(email):
 def get_layouts(email):
     print(email)
 
-@app.post("/bookings", dependencies=[Depends(check_jwt_token)])
+# End_Points
+@app.post("/bookings", dependencies=[Depends(check_jwt_token)], status_code=200)
 def slot_bookings(payload: BookingPayload):
     later = False
     if payload.start_time != None :
@@ -65,13 +79,31 @@ def slot_bookings(payload: BookingPayload):
                        payload.slot_name,
                        later)
 
-@app.get("/bookings/{user_id}", dependencies=[Depends(check_jwt_token)])
+@app.get("/bookings/{user_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
 def get_booking(user_id: str):
     return get_bookings(user_id)
 
-@app.get("/layout/{office_id}", dependencies=[Depends(check_jwt_token)])
+@app.get("/layout/{office_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
 def get_layout(office_id: str):
-    return get_layouts(office_id)
+    return {
+        "layouts" : [
+            { "layout1" : [
+                ["B00", 0 , 0],
+                ["B10", "B11" , 0],
+                ["B20", 0 , 0],
+            ]},
+            { "layout2" : [
+                ["B00", 0 , 0],
+                ["B10", "B11" , 0],
+                ["B20", 0 , 0],
+            ]},
+            { "layout3" : [
+                ["B00", 0 , 0],
+                ["B10", "B11" , 0],
+                ["B20", 0 , 0],
+            ]},
+        ]
+    }
 
 @app.get("/login", status_code=200)
 def login(payload: Payload):
