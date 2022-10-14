@@ -83,27 +83,9 @@ def slot_bookings(payload: BookingPayload):
 def get_booking(user_id: str):
     return get_bookings(user_id)
 
-@app.get("/layout/{office_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
-def get_layout(office_id: str):
-    return {
-        "layouts" : [
-            { "layout1" : [
-                ["B00", 0 , 0],
-                ["B10", "B11" , 0],
-                ["B20", 0 , 0],
-            ]},
-            { "layout2" : [
-                ["B00", 0 , 0],
-                ["B10", "B11" , 0],
-                ["B20", 0 , 0],
-            ]},
-            { "layout3" : [
-                ["B00", 0 , 0],
-                ["B10", "B11" , 0],
-                ["B20", 0 , 0],
-            ]},
-        ]
-    }
+@app.get("/layout/{pl_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
+def get_layout(pl_id: str):
+    return convert_layout(database.layout(pl_id))
 
 @app.get("/login", status_code=200)
 def login(payload: Payload):
