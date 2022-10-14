@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import bcrypt
 import jwt
 import datetime
+from database import database
 
 origins = [ '*' ]
 
@@ -25,25 +26,6 @@ class Payload(BaseModel):
     email : str
     password : str | None
     car_rc : str | None
-
-def user_exists(user_name: str, password: str) -> bool:
-    s = bcrypt.hashpw("password".encode("utf-8"), SALT)
-    s = s.decode()
-    b = bcrypt.checkpw(password.encode("utf-8"), s.encode("utf-8"))
-    if user_name == "aditya" and b:
-        return True
-    else: return False
-
-def car_exists(user_name: str, car_rc: str) -> bool:
-    if user_name == "aditya" and car_rc == "ritz" :
-        return True
-    else: return False
-
-def create_user(email: str, password: str):
-    print(email, password)
-
-def register_car(email: str, car_rc: str):
-    print(f"User Created! {email} {car_rc}", email, car_rc)
 
 def get_jwt_token(email: str):
     return jwt.encode({ "email" : email ,
@@ -67,7 +49,7 @@ def login(payload: Payload):
     if payload.password == None:
         raise HTTPException(status_code=404, detail="No Password Provided")
     else:
-        if user_exists(payload.email, payload.password):
+        if database.user_exists(payload.email, payload.password):
             return {
                 "message" : "Logged In Succesfully",
                 "token" : get_jwt_token(payload.email)
@@ -78,11 +60,11 @@ def login(payload: Payload):
 @app.post("/register/{entity}", status_code = 201)
 def register(payload: Payload, entity:str):
     if entity == "user" and payload.password != None :
-        if user_exists(payload.email, payload.password):
+        if database.user_exists(payload.email, payload.password):
             raise HTTPException(status_code=404, detail="User Already exists")
         else:
             try :
-                create_user(payload.email, payload.password)
+                database.create_user(payload.email, payload.password)
             except:
                 raise HTTPException(status_code=501, detail="Internal Server Error")
             return {
@@ -90,9 +72,13 @@ def register(payload: Payload, entity:str):
                 "token" : get_jwt_token(payload.email)
             }
     elif entity == "car" and payload.car_rc != None :
-        if car_exists(payload.email, payload.car_rc):
+        if database.car_exists(payload.email, payload.car_rc):
             raise HTTPException(status_code=404, detail="Car {car} has already been registered!".format(car = payload.car_rc))
         else:
+            try :
+                database.register_car(payload.email, payload.password)
+            except:
+                raise HTTPException(status_code=501, detail="Internal Server Error")
             return {
                 "message" : "Car was registered to {email} Succesfuly".format(email = payload.email),
                 "token" : get_jwt_token(payload.email)
