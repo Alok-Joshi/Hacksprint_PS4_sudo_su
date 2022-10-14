@@ -1,6 +1,7 @@
-from models import Base
+from models import *
 from sqlalchemy_utils import database_exists, create_database,drop_database
 from sqlalchemy import  create_engine
+from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import sys
 import os
@@ -31,6 +32,25 @@ def reset_db():
     except Exception as e:
             print(e)
 
+def insert_dummy():
+    """ Inserts the neccessary dummy values for testing """
+    engine = create_engine(SERVER_URL, echo = True, future = True)
+    session = Session(engine)
+
+    parking_lot = ParkingLot(pl_id = 1, name = "Kothrud Parking Lot", city = "Pune",state = "MH")
+    sample_layout = Layout(layout_id = 0,pl_id = 1)
+    slots_elements = []
+
+    for i in range(5):
+        slots_elements.append(Slot(layout_id = 0,slot_name = i,pl_id = 1))
+
+    session.add(parking_lot)
+    session.commit()
+    session.add(sample_layout)
+    session.commit()
+    session.add_all(slots_elements)
+    session.commit()
+
         
 if(__name__ == "__main__"):
 
@@ -39,7 +59,6 @@ if(__name__ == "__main__"):
 
     elif(sys.argv[1] == "reset_db"):
         reset_db()
-    else:
-        print("Unknown command")
-
+    elif(sys.argv[1] == "insert_dummy"):
+        insert_dummy()
 
