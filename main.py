@@ -87,7 +87,7 @@ def get_booking(user_id: str):
 def get_layout(pl_id: str):
     return convert_layout(database.layout(pl_id))
 
-@app.get("/login", status_code=200)
+@app.post("/login", status_code=200)
 def login(payload: Payload):
     if payload.password == None:
         raise HTTPException(status_code=404, detail="No Password Provided")
