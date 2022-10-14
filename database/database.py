@@ -6,7 +6,7 @@ import bcrypt
 import os
 import pdb
 
-# load_dotenv("db.env")
+load_dotenv("db.env")
 DB_PROTOCOL = os.getenv("DB_PROTOCOL")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -57,7 +57,35 @@ def register_car(email,vehicle_rc):
     session.commit()
 
 
-def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,office_id = 1,later = False)
+def is_booked(slot_name,pl_id,layout_id):
+    session = Session(engine)
+    bookings = session.query(Booking).filter(and_(and_(Booking.layout_id == layout_id,Booking.pl_id == pl_id) , Booking.slot_name == slot_name)).all()
+    return len(bookings) != 0
+
+def layout(pl_id):
+    """ Returns all the layouts with their respective slots  for a given parking lot """
+    session = Session(engine)
+    layout_count = session.query(Layout).filter(Layout.pl_id == pl_id).all()
+
+    slots = session.query(Layout,Slot).filter(Layout.pl_id == pl_id).filter(Layout.layout_id == Slot.layout_id).all()
+    #pdb.set_trace()
+    output = [[] for _ in range(len(layout_count))]
+    for i in slots:
+        i_layout_id = i["Layout"].layout_id
+        i_slot_name = i["Slot"].slot_name
+
+        if(is_booked(i_slot_name,pl_id,i_layout_id)):
+            output[i_layout_id].append(0)
+        else:
+            output[i_layout_id].append(i_slot_name)
+
+    return output
+
+        
+        
+    print(slots)
+
+def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,office_id = 1,later = False):
     """ 
     Books the given slot
     return dictionary mentioning if given slot was alloted (selected_slot:False)
@@ -102,7 +130,7 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,office_id
 
         
         
-
+print(layout(1))
 
 
     
