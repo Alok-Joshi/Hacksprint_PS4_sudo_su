@@ -33,6 +33,8 @@ class Layout(Base):
 
       layout_id = Column(Integer, primary_key = True)
       pl_id = Column(Integer, ForeignKey("parking_lot.pl_id"), nullable = False,primary_key = True)
+      def __repr__(self):
+          return f"layout_id : {self.layout_id} pl_id : {self.pl_id} "
 
 class Slot(Base):
 
@@ -41,6 +43,9 @@ class Slot(Base):
       layout_id = Column(Integer, ForeignKey("layouts.layout_id"),nullable = False,primary_key = True)
       slot_name = Column(Integer, primary_key = True,nullable = False)
       pl_id = Column(Integer, ForeignKey("parking_lot.pl_id"), nullable = False,primary_key = True)
+
+      def __repr__(self):
+          return f"layout_id: {self.layout_id} slot_name: {self.slot_name} pl_id: {self.pl_id} "
 
 
 
