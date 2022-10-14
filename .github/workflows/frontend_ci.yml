@@ -15,13 +15,13 @@ jobs:
         with:
           channel: 'beta'
       - run: flutter pub get
-        working-directory: "./APP"
+        working-directory: ./APP
       - run: flutter format --set-exit-if-changed .
-        working-directory: "./APP"
+        working-directory: ./APP
       - run: flutter analyze .
-        working-directory: "./APP"
+        working-directory: ./APP
       - run: flutter build apk
-        working-directory: "./APP"
+        working-directory: ./APP
       - uses: actions/upload-artifact@v1
         with:
           name: release-apk
