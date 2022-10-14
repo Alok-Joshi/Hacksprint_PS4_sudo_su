@@ -37,3 +37,43 @@ class TabBarText extends StatelessWidget {
     );
   }
 }
+
+
+class Typography0 extends StatelessWidget {
+  Typography0({Key? key, required this.text}) : super(key: key);
+  String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.w300
+      ),
+    );
+  }
+}
+
+
+class Typography1 extends StatelessWidget {
+  Typography1({Key? key, required this.text}) : super(key: key);
+  String text;
+  @override
+  Widget build(BuildContext context) {
+    return Text(text,
+    style: TextStyle(
+        fontSize: 20,
+    ),
+    );
+  }
+}
+
+class Typography2 extends StatelessWidget {
+  Typography2({Key? key, required this.text}) : super(key: key);
+  String text;
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, style: TextStyle(color: Colors.red),);
+  }
+}

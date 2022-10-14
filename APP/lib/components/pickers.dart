@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bookmyspot/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
@@ -5,17 +7,19 @@ import 'dart:developer';
 import '../constrains.dart';
 
 class BMSDateTimePicker extends StatefulWidget {
-  BMSDateTimePicker({Key? key, this.label, this.hint, this.dateController}) : super(key: key);
+  BMSDateTimePicker({Key? key, this.label, this.hint, this.width, this.dateController}) : super(key: key);
   TextEditingController? dateController;
   String? label;
   String? hint;
+  double? width;
 
   @override
   State<BMSDateTimePicker> createState() => _BMSDateTimePickerState();
 }
 
 class _BMSDateTimePickerState extends State<BMSDateTimePicker> {
-  final _verbalDate = TextEditingController();
+  final _verbalDate = TextEditingController(text: getVerbalPresentation(DateTime.now()));
+
 
   void dateSelectorDialoge() async {
     DateTime? pickedDate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime(DateTime.now().year, DateTime.now().month + 1));
@@ -50,8 +54,9 @@ class _BMSDateTimePickerState extends State<BMSDateTimePicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 343,
+      width: widget.width ?? 343,
       child: TextFormField(
+        readOnly: true,
         controller: _verbalDate,
         onTap: () {
           dateSelectorDialoge();

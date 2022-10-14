@@ -20,3 +20,11 @@ List<String> months = [
 String getVerbalPresentation(DateTime sel) {
   return "${sel.day} ${months[sel.month]}, ${(sel.hour > 12)? sel.hour - 12: sel.hour}:${sel.minute} ${(sel.hour > 12)? "PM": "AM"}";
 }
+
+DateTime construct(String s) {
+  try {
+    return DateTime.parse(s);
+  } catch(e) {
+    return DateTime.now();
+  }
+}

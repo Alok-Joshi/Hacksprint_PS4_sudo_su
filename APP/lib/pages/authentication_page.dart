@@ -88,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     widget.lodingCallBack();
     await Future.delayed(Duration(seconds: 3));
     widget.lodingCallBack();
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
 
@@ -147,6 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
     widget.lodingCallBack();
     await Future.delayed(Duration(seconds: 3));
     widget.lodingCallBack();
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
