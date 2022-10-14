@@ -4,6 +4,7 @@ from models import *
 from dotenv import load_dotenv
 import bcrypt
 import os
+import pdb
 
 load_dotenv("db.env")
 DB_PROTOCOL = os.getenv("DB_PROTOCOL")
@@ -16,18 +17,18 @@ SERVER_URL = f"{DB_PROTOCOL}{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
 engine = create_engine(SERVER_URL,pool_size = 20)
 
-SALT: bytes
-
-def set_salt(salt: str):
-    SALT = salt
+def check_hash(db_password,entered_password):
+    isSame = bcrypt.checkpw(entered_password.encode("utf-8"), db_password.encode("utf-8")) 
+    return isSame
 
 def user_exists(email, password):
     """Checks if the email and password exists in the database. returns true or false. """
     session = Session(engine)
-    db_output =  session.query(User).filter(and_(User.email == email,User.password == password)).all()
+    #pdb.set_trace()
+    db_output =  session.query(User).filter(User.email == email).all()
     session.close()
-    if len(db_output) == 1 and bcrypt.checkpw(password.encode("utf-8"), db_output[0].password.encode("utf-8")):
-        return True
+    if(len(db_output)>0):
+        return (check_hash(db_output[0].password, password)) 
     else:
         return False
 
@@ -42,8 +43,8 @@ def car_exists(email,vehicle_rc):
 def create_user(email,password):
     """ Creates a new user with email and password. """
     session = Session(engine)
-    password = bcrypt.hashpw(password.encode("utf-8"), SALT)
-    user_obj = User(email  = email,password = password.decode())
+    password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    user_obj = User(email  = email,password = password.decode('utf-8'))
     session.add(user_obj)
     session.commit()
 
@@ -56,4 +57,7 @@ def register_car(email,vehicle_rc):
     session.commit()
 
 
-user_exists("AlokJoshi523@gmail.com","alokalok")
+print(create_user("Alok@gmail.com","alokalok"))
+
+print(user_exists("Alok@gmail.com","alokalok"))
+
