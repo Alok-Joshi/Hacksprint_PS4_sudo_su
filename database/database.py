@@ -6,7 +6,7 @@ import bcrypt
 import os
 import pdb
 
-load_dotenv("db.env")
+# load_dotenv("db.env")
 DB_PROTOCOL = os.getenv("DB_PROTOCOL")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -18,7 +18,7 @@ SERVER_URL = f"{DB_PROTOCOL}{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 engine = create_engine(SERVER_URL,pool_size = 20)
 
 def check_hash(db_password,entered_password):
-    isSame = bcrypt.checkpw(entered_password.encode("utf-8"), db_password.encode("utf-8")) 
+    isSame = bcrypt.checkpw(entered_password.encode("utf-8"), db_password.encode("utf-8"))
     return isSame
 
 def user_exists(email, password):
@@ -28,7 +28,7 @@ def user_exists(email, password):
     db_output =  session.query(User).filter(User.email == email).all()
     session.close()
     if(len(db_output)>0):
-        return (check_hash(db_output[0].password, password)) 
+        return (check_hash(db_output[0].password, password))
     else:
         return False
 
