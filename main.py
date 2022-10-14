@@ -80,6 +80,6 @@ def register(payload: Payload, entity:str):
             except:
                 raise HTTPException(status_code=501, detail="Internal Server Error")
             return {
-                "message" : "Car was registered to {email} Succesfuly".format(email = payload.email),
+                "message" : "Car was registered to {email} Succesfully!".format(email = payload.email),
                 "token" : get_jwt_token(payload.email)
             }
