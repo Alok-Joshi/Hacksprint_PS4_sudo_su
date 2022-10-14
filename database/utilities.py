@@ -42,9 +42,9 @@ def insert_dummy():
     sample_layout1 = Layout(layout_id = 1,pl_id = 1)
     slots_elements = []
 
-    for i in range(5):
+    for i in range(1,6):
         slots_elements.append(Slot(layout_id = 0,slot_name = i,pl_id = 1))
-    for i in range(5):
+    for i in range(1,6):
         slots_elements.append(Slot(layout_id = 1,slot_name = i,pl_id = 1))
 
     session.add(parking_lot)
