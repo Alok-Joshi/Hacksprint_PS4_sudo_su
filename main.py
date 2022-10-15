@@ -75,6 +75,17 @@ def get_layouts(email):
     print(email)
 
 # End_Points
+@app.get("/bookings/{email_id}", status_code=200)
+def get_upcoming_bookings(email_id: str, token : str  = Header(None)):
+    try:
+        a = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        if a["email"] != email_id:
+            raise HTTPException(status_code=404, detail="Unauthorised Email ID")
+        else:
+            return database.upcoming_bookings(email_id)
+    except:
+        raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
+
 @app.post("/bookings", dependencies=[Depends(check_jwt_token)], status_code=200)
 def slot_bookings(payload: BookingPayload):
     later = False
