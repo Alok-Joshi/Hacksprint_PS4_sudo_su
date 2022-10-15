@@ -120,10 +120,10 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
        if(len(result)>0):
            #this implies there are slots are absolutely free. Allocate any one of this
 
-           selected_slot = tuple(result[0])
-           booked_slot = Booking(email = selected_slot[0],vehicle_rc = selected_slot[1], layout_id = selected_slot[2], slot_name = selected_slot[3],pl_id = selected_slot[4], start_time = start_time, end_time = end_time)
+           selected_slot = result[0]["slots"]
+           booked_slot = Booking(email = email,vehicle_rc = selected_slot.vehicle_rc, layout_id = selected_slot.layout_id, slot_name = selected_slot.slot_name,pl_id = selected_slot.pl_id, start_time = start_time, end_time = end_time)
            session.add(booked_slot)
-           return_dict = {"slot_name":selected_slot[3],"email":selected_slot[0],"vehicle_rc":selected_slot[1],"layout_id":selected_slot[2],"start_time":start_time,"end_time":end_time,"pl_id":selected_slot[4],"later":later}
+           return_dict = {"slot_name":selected_slot.slot_name,"email":email,"vehicle_rc":selected_slot.vehicle_rc,"layout_id":selected_slot.layout_id,"start_time":start_time,"end_time":end_time,"pl_id":selected_slot.pl_id,"later":later}
 
            return return_dict
 
