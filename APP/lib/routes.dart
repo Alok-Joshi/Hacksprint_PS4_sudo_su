@@ -11,8 +11,8 @@ class BookMySpotAppRouts {
     "/" : (context) => const Wrapper(),
     "/test" : (context) => const TestPage(),
     "/auth" : (context) => const AuthenticationPage(),
-    "/home" : (context) => const Dashboard(),
-    "/reserve/immediate" : (context) => const ImmediateReservation(),
-    "/reserve/later" : (context) => const LaterReservation()
+    "/home" : (context) => Dashboard(),
+    "/reserve/immediate" : (context) => ImmediateReservation(),
+    "/reserve/later" : (context) => LaterReservation()
   };
 }

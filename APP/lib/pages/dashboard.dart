@@ -3,23 +3,31 @@ import 'package:bookmyspot/components/buttons.dart';
 import 'package:bookmyspot/components/pickers.dart';
 import 'package:bookmyspot/components/typography.dart';
 import 'package:bookmyspot/constrains.dart';
+import 'package:bookmyspot/pages/my_reservations.dart';
+import 'package:bookmyspot/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
+import '../models/user.dart';
+import 'my_vechicles.dart';
+
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key}) : super(key: key);
+  Dashboard({Key? key, this.user}) : super(key: key);
+  User? user;
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  late User? user;
   bool disablePlage = false;
+
 
   Future loadProfile() async {
     setState(() {
       disablePlage = true;
     });
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       disablePlage = false;
     });
@@ -27,31 +35,40 @@ class _DashboardState extends State<Dashboard> {
 
 
   @override
+  void initState() {
+    user  = widget.user ;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+   user = user ?? (ModalRoute.of(context)!.settings.arguments as User);
+
     return Stack(
       children: [
 
         Scaffold(
           appBar: AppBar(
-            title: ButtonText(text: "BookMySpot", color: Color(button_primary_color),),
+            title: ButtonText(text: "BookMySpot", color: const Color(button_primary_color),),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             actions: [
               IconButton(onPressed: () {
                 loadProfile();
-              }, icon: Icon(Icons.refresh))
+              }, icon: const Icon(Icons.refresh))
             ],
           ),
           drawer: Container(
             width: 300,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30)
-              )
+                bottomRight: const Radius.circular(30)
+              ),
             ),
+            child: BMSDrawer(appUser: user!,),
           ),
           body: Container(
             // height: 600,
@@ -62,17 +79,17 @@ class _DashboardState extends State<Dashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 50,),
-                ParkingLayoutBuilder(),
-                SizedBox(height: 40,),
+                const SizedBox(height: 50,),
+                const ParkingLayoutBuilder(),
+                const SizedBox(height: 40,),
                 GestureDetector(
                   onTap: () {
-                    showBasicBottomModalSheet(context, ReserveSpotOptions());
+                    showBasicBottomModalSheet(context, ReserveSpotOptions(user: user!,));
                   },
                   child: BMSOutlinedButton(
                     child: ButtonText(
                       text: "Reserve Spot",
-                      color: Color(button_primary_color),
+                      color: const Color(button_primary_color),
                     ),
                   ),
                 )
@@ -80,12 +97,12 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
         ),
-        disablePlage? Opacity(
+        disablePlage? const Opacity(
           opacity: 0.8,
-          child: ModalBarrier(dismissible: false, color: Colors.black),
+          child: const ModalBarrier(dismissible: false, color: Colors.black),
         ): Container(),
-        disablePlage? Center(
-          child: CircularProgressIndicator(),
+        disablePlage? const Center(
+          child: const CircularProgressIndicator(),
         ): Container(),
       ],
     );
@@ -130,11 +147,11 @@ class _ParkingLayoutBuilderState extends State<ParkingLayoutBuilder> {
                 width: 230,
                 dateController: _timeInstanceController,
               ),
-              SizedBox(width: 10,),
+              const SizedBox(width: 10,),
               BMSFilledButton(
                 width: 100,
                 height: 60,
-                child: Icon(Icons.arrow_forward_ios, color: Colors.white,),
+                child: const Icon(Icons.arrow_forward_ios, color: Colors.white,),
               )
             ],
           ),
@@ -142,7 +159,7 @@ class _ParkingLayoutBuilderState extends State<ParkingLayoutBuilder> {
             padding: const EdgeInsets.all(8.0),
             child: ParkingLayoutRepresentation(parkingGrid: parking,),
           ),
-          Legend()
+          const Legend()
         ],
       ),
     );
@@ -161,13 +178,13 @@ class ParkingLayoutRepresentation extends StatelessWidget {
       if (parkingGrid[i][0] != -1) {
         temp.add(Text("${i+1}"));
       } else {
-        temp.add(Text(""));
+        temp.add(const Text(""));
       }
       for (int j = 0; j < parkingGrid[i].length; j++) {
         if (parkingGrid[i][j] != -1) {
           temp.add(ParkingSpot(status: parkingGrid[i][j]));
         } else {
-          temp.add(PathBlock());
+          temp.add(const PathBlock());
         }
       }
 
@@ -201,7 +218,7 @@ class ParkingSpot extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       child: Container(
         decoration: BoxDecoration(
-          color: (status == 1) ? Color(0xffFFB7D2) : (status == 0) ? Color(0xff56BBF1) : Colors.white,
+          color: (status == 1) ? const Color(0xffFFB7D2) : (status == 0) ? const Color(0xff56BBF1) : Colors.white,
           borderRadius: BorderRadius.circular(5)
         ),
         height: 30,
@@ -220,7 +237,7 @@ class PathBlock extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 4),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xffC7C7C7),
             // borderRadius: BorderRadius.circular(5)
         ),
@@ -228,7 +245,7 @@ class PathBlock extends StatelessWidget {
         width: 30,
 
       ),
-    );;
+    );
   }
 }
 
@@ -252,12 +269,12 @@ class Legend extends StatelessWidget {
                     height: 20,
                     width: 20,
                     decoration: BoxDecoration(
-                      color: Color(0xffFFB7D2),
+                      color: const Color(0xffFFB7D2),
                       borderRadius: BorderRadius.circular(5)
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Text("Reserved")
+                  const SizedBox(width: 5,),
+                  const Text("Reserved")
                 ],
               ),
             ],
@@ -271,12 +288,12 @@ class Legend extends StatelessWidget {
                     height: 20,
                     width: 20,
                     decoration: BoxDecoration(
-                        color: Color(0xff56BBF1),
+                        color: const Color(0xff56BBF1),
                         borderRadius: BorderRadius.circular(5)
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Text("Open")
+                  const SizedBox(width: 5,),
+                  const Text("Open")
                 ],
               ),
             ],
@@ -290,12 +307,12 @@ class Legend extends StatelessWidget {
                     height: 20,
                     width: 20,
                     decoration: BoxDecoration(
-                        color: Color(0xffC7C7C7),
+                        color: const Color(0xffC7C7C7),
                         borderRadius: BorderRadius.circular(5)
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Text("Path")
+                  const SizedBox(width: 5,),
+                  const Text("Path")
                 ],
               ),
             ],
@@ -307,7 +324,8 @@ class Legend extends StatelessWidget {
 }
 
 class ReserveSpotOptions extends StatelessWidget {
-  const ReserveSpotOptions({Key? key}) : super(key: key);
+  ReserveSpotOptions({Key? key, required this.user}) : super(key: key);
+  User user;
 
   @override
   Widget build(BuildContext context) {
@@ -317,33 +335,86 @@ class ReserveSpotOptions extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Typography0(text: "Reserve Parking Spot!"),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, "/reserve/immediate");
+              Navigator.pushNamed(context, "/reserve/immediate", arguments: user);
             },
             child: BMSFilledButton(
               child: ButtonText(text: "Immediate",),
             ),
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, "/reserve/later");
+              Navigator.pushNamed(context, "/reserve/later", arguments: user);
             },
             child: BMSFilledButton(
               child: ButtonText(text: "Later",),
             ),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           GestureDetector(
             onTap: () {
               Navigator.pop(context);
             },
             child: BMSOutlinedButton(
-              child: ButtonText(text: "Close", color: Color(button_primary_color),),
+              child: ButtonText(text: "Close", color: const Color(button_primary_color),),
             ),
           )
+        ],
+      ),
+    );
+  }
+}
+
+
+class BMSDrawer extends StatelessWidget {
+  BMSDrawer({Key? key, required this.appUser}) : super(key: key);
+  User appUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: const Color(button_primary_color),
+              borderRadius: BorderRadius.circular(25)
+            ),
+            child: const Icon(Icons.account_circle, size: 50, color: Colors.white,),
+          ),
+          const SizedBox(height: 10,),
+          Text(appUser.email, style: TextStyle(
+            fontSize: 20
+          ),),
+          const SizedBox(height: 10,),
+          const Divider(thickness: 2,),
+          const SizedBox(height: 20,),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(appUser: appUser,)));
+            },
+              child: DrawerOptions(name: "Profile", icon: Icons.account_circle,)),
+          const SizedBox(height: 10,),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MyVechicles(user: appUser,)));
+            },
+              child: DrawerOptions(name: "Vehicles", icon: Icons.car_rental,)),
+          const SizedBox(height: 10,),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MyReservations(user: appUser)));
+            },
+              child: DrawerOptions(name: "My Reservations", icon: Icons.schedule,)),
+          const SizedBox(height: 10,),
+          DrawerOptions(name: "Nearby Parking", icon: Icons.map,),
         ],
       ),
     );

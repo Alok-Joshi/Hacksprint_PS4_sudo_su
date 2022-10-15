@@ -40,8 +40,9 @@ class TabBarText extends StatelessWidget {
 
 
 class Typography0 extends StatelessWidget {
-  Typography0({Key? key, required this.text}) : super(key: key);
+  Typography0({Key? key, required this.text, this.color}) : super(key: key);
   String text;
+  Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,8 @@ class Typography0 extends StatelessWidget {
       text,
       style: TextStyle(
         fontSize: 40,
-        fontWeight: FontWeight.w300
+        fontWeight: FontWeight.w300,
+        color: color ?? Colors.black
       ),
     );
   }
@@ -57,13 +59,15 @@ class Typography0 extends StatelessWidget {
 
 
 class Typography1 extends StatelessWidget {
-  Typography1({Key? key, required this.text}) : super(key: key);
+  Typography1({Key? key, required this.text, this.color}) : super(key: key);
   String text;
+  Color? color;
   @override
   Widget build(BuildContext context) {
     return Text(text,
     style: TextStyle(
         fontSize: 20,
+      color: color ?? Colors.black
     ),
     );
   }

@@ -4,7 +4,10 @@ import 'package:bookmyspot/components/buttons.dart';
 import 'package:bookmyspot/components/textboxes.dart';
 import 'package:bookmyspot/components/typography.dart';
 import 'package:bookmyspot/constrains.dart';
+import 'package:bookmyspot/services/AuthenticationService.dart';
 import 'package:flutter/material.dart';
+
+import '../models/user.dart';
 
 class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({Key? key}) : super(key: key);
@@ -38,7 +41,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> with TickerProv
       appBar: AppBar(
         title: TabBarText(text: "BookMySpot",),
         centerTitle: false,
-        backgroundColor: Color(button_primary_color),
+        backgroundColor: const Color(button_primary_color),
         bottom: TabBar(
           indicatorColor: Colors.white,
           controller: _tabController,
@@ -57,11 +60,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> with TickerProv
               SingleChildScrollView(child: RegisterPage(lodingCallBack: lodingStateChange,))
             ],
           ),
-          disablePlage? Opacity(
+          disablePlage? const Opacity(
             opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
+            child: const ModalBarrier(dismissible: false, color: Colors.black),
           ): Container(),
-          disablePlage? Center(
+          disablePlage? const Center(
             child: CircularProgressIndicator(),
           ): Container(),
         ],
@@ -86,9 +89,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Future executeLogin() async {
     widget.lodingCallBack();
-    await Future.delayed(Duration(seconds: 3));
-    widget.lodingCallBack();
-    Navigator.pushReplacementNamed(context, '/home');
+    await Future.delayed(const Duration(seconds: 3));
+    User temp = User(_emailController.text, "",_passwordController.text);
+
+    User? res = await AuthenticationService().login(temp);
+
+    if (res?.error_code != null) {
+      Navigator.pushReplacementNamed(context, '/home', arguments: res);
+    }
   }
 
 
@@ -146,9 +154,17 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future executeRegister() async {
     widget.lodingCallBack();
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
+
+    User temp = User(_emailController.text, "",_passwordController.text);
+
+    User? res = await AuthenticationService().register(temp);
+
     widget.lodingCallBack();
-    Navigator.pushReplacementNamed(context, '/home');
+
+    if (res?.error_code != null) {
+      Navigator.pushReplacementNamed(context, '/home', arguments: res);
+    }
   }
 
   @override
@@ -163,17 +179,15 @@ class _RegisterPageState extends State<RegisterPage> {
               key:  _registerFromKey,
               child: Column(
                 children: [
-                  BMSTextField(label: 'name', controller: _nameController,),
-                  SizedBox(height: 10,),
                   BMSTextField(label: 'email', controller: _emailController,),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   BMSPasswordField(label: 'password', controller: _passwordController,),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   BMSPasswordField(label: 'confirm password', controller: _confirmPasswordController,),
                 ],
               ),
             ),
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             GestureDetector(
               onTap: () async {
                 await executeRegister();
