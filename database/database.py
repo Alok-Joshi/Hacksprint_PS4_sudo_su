@@ -97,6 +97,7 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
     return dictionary mentioning if given slot was alloted (selected_slot:False)
 
     """
+    # pdb.set_trace()
     if(not later):
         session = Session(engine)
         #first check if the given slot is available
@@ -114,15 +115,15 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
        session = Session(engine)
 
        #step 1: first check absolutely free time slots. Those which are not booked FOR ANY TIME SLOT.
-       result = engine.execute("select * from slots right outer join booking on (slots.pl_id = booking.pl_id and slots.slot_name = booking.slot_name and booking.layout_id = slots.layout_id) where b(booking.pl_id is NULL and booking.slot_name is NULL and booking.layout_id is NULL);").all()
+       result = engine.execute("select * from slots left outer join booking on (slots.pl_id = booking.pl_id and slots.slot_name = booking.slot_name and booking.layout_id = slots.layout_id) where (booking.pl_id is NULL and booking.slot_name is NULL and booking.layout_id is NULL);").all()
 
        if(len(result)>0):
            #this implies there are slots are absolutely free. Allocate any one of this
 
            selected_slot = tuple(result[0])
-           booked_slot = Booking(email = selected_slot[0],vehicle_rc = selected_slot[1], layout_id = selected_slot[2], slot_name = selected_slot[3],office_id = selected_slot[4], start_time = start_time, end_time = end_time)
+           booked_slot = Booking(email = selected_slot[0],vehicle_rc = selected_slot[1], layout_id = selected_slot[2], slot_name = selected_slot[3],pl_id = selected_slot[4], start_time = start_time, end_time = end_time)
            session.add(booked_slot)
-           return_dict = {"slot_name":selected_slot[3],"email":selected_slot[0],"vehicle_rc":selected_slot[1],"layout_id":selected_slot[2],"start_time":start_time,"end_time":end_time,"office_id":selected_slot[4],"later":later}
+           return_dict = {"slot_name":selected_slot[3],"email":selected_slot[0],"vehicle_rc":selected_slot[1],"layout_id":selected_slot[2],"start_time":start_time,"end_time":end_time,"pl_id":selected_slot[4],"later":later}
 
            return return_dict
 
