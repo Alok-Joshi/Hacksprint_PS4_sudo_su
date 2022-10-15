@@ -69,9 +69,15 @@ def get_car(email):
 
 def is_booked(slot_name,pl_id,layout_id):
     session = Session(engine)
-    pdb.set_trace()
-    bookings = session.query(Booking).filter(and_(and_(and_(and_(Booking.layout_id == layout_id,Booking.pl_id == pl_id) , Booking.slot_name == slot_name),datetime.datetime.now()>=Booking.start_time)),datetime.datetime.now()<Booking.end_time).all()
-    bookings = session.query(Booking).filter(Booking.pl_id == pl_id).filter(Booking.layout_id == layout_id).filter(Booking.slot_name == slot_name).filter(and_(datetime.datetime.now()<Booking.end_time,datetime.datetime.now()>=Booking.start_time)).all()
+    # pdb.set_trace()
+    current_time = datetime.datetime.now()
+    bookings = session.query(Booking).filter(
+            Booking.pl_id == pl_id
+            ).filter(
+                Booking.layout_id == layout_id
+                ).filter(
+                        Booking.slot_name == slot_name
+                        ).all()
     return len(bookings) != 0
 
 def layout(pl_id):
@@ -131,3 +137,10 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
            #refer to algo given in the notebook
            #session = Session(engine)
            #db_output = session.query(Booking).filter(Booking
+
+
+""" .filter(
+        and_(
+            current_time < Booking.end_time, current_time > Booking.start_time
+            )
+        )"""

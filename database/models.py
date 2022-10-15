@@ -56,6 +56,7 @@ class Vehicle(Base):
 
       def __repr__(self):
           return f"{self.rc} {self.owner} "
+
 class Booking(Base):
 
       __tablename__ = 'booking'
@@ -65,6 +66,9 @@ class Booking(Base):
       layout_id = Column(Integer)
       slot_name = Column(Integer)
       pl_id = Column(Integer)
+
+      def __repr__(self):
+          return f"layout_id: {self.layout_id} slot_name: {self.slot_name} pl_id: {self.pl_id} vehicle_rc: {self.vehicle_rc} email : {self.email}"
 
       start_time = Column(DateTime)
       end_time = Column(DateTime)
