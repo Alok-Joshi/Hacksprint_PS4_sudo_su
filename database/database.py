@@ -145,7 +145,8 @@ def upcoming_bookings(email):
     booking_obj = session.query(Booking).filter(Booking.email == email).all()
     parking_lot_data = session.query(ParkingLot).filter(booking_obj[0].pl_id == ParkingLot.pl_id).all()
 
-    booking = {"Parking Name": parking_lot_data[0].name, "pl_id":booking_obj[0].pl_id,"layout_id":booking_obj[0].layout_id,"slot_name":booking_obj[0].slot_name,"vehicle_rc":booking_obj[0].vehicle_rc}
+    booking = {"Parking Name": parking_lot_data[0].name, "pl_id":booking_obj[0].pl_id,"layout_id":booking_obj[0].layout_id,"slot_name":booking_obj[0].slot_name,"vehicle_rc":booking_obj[0].vehicle_rc,
+            "start_time":booking_obj[0].start_time,"end_time":booking_obj[0].end_time}
     return booking
 
 
