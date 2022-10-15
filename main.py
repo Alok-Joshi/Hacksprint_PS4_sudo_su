@@ -29,8 +29,10 @@ class Payload(BaseModel):
 
 class BookingPayload(BaseModel):
     email : str
-    start_time : datetime.datetime | None
+    car_rc: str
+    pl_id: str
     end_time : datetime.datetime
+    start_time : datetime.datetime | None
     slot_name : str | None
 
 def get_jwt_token(email: str):
@@ -58,11 +60,16 @@ def convert_layout(layout):
 
     return dic
 
+def parse_slot(slot_name: str):
+    layout_id = ord(slot_name[0]) - ord('A')
+    slot_id = int(slot_name[1:])
+    return {
+        "layout_id" : layout_id,
+        "slot_id" : slot_id
+    }
+
 def book_slot(email, start_time, end_time, slot_name, later):
     print(email, start_time, end_time, slot_name, later)
-
-def get_bookings(email):
-    print(email)
 
 def get_layouts(email):
     print(email)
@@ -73,25 +80,33 @@ def slot_bookings(payload: BookingPayload):
     later = False
     if payload.start_time != None :
         later = True
-    return book_slot(payload.email,
-                       payload.start_time,
-                       payload.end_time,
-                       payload.slot_name,
-                       later)
+    if payload.slot_name is not None:
+        val = parse_slot(payload.slot_name)
+        return database.book_slot(val["slot_id"],
+                                  payload.email,
+                                  payload.car_rc,
+                                  val["layout_id"],
+                                  payload.start_time,
+                                  payload.end_time,
+                                  payload.pl_id,
+                                  later)
+    else:
+        raise HTTPException(status_code=404, detail="No slot_name Provided!")
 
-@app.get("/bookings/{user_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
-def get_booking(user_id: str):
-    return get_bookings(user_id)
+@app.get("/bookings/{email_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
+def get_booking(email_id: str):
+    # return database.get_bookings(email_id)
+    print(email_id)
 
 @app.get("/layout/{pl_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
 def get_layout(pl_id: str):
     return convert_layout(database.layout(pl_id))
 
-@app.get("/vehicles/{user_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
-def get_vehicles(user_id: str):
-    d = database.get_car(user_id)
+@app.get("/vehicles/{email_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
+def get_vehicles(email_id: str):
+    d = database.get_car(email_id)
     return {
-        "user_id" : user_id,
+        "email_id" : email_id,
         "vehicles" : d
     }
 
