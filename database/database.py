@@ -139,6 +139,16 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
            #db_output = session.query(Booking).filter(Booking
 
 
+def upcoming_bookings(email):
+    """ returns the upcoming bookings of a user """
+    session = Session(engine)
+    booking_obj = session.query(Booking).filter(Booking.email == email).all()
+    parking_lot_data = session.query(ParkingLot).filter(booking_obj[0].pl_id == ParkingLot.pl_id).all()
+
+    booking = {"Parking Name": parking_lot_data[0].name, "pl_id":booking_obj[0].pl_id,"layout_id":booking_obj[0].layout_id,"slot_name":booking_obj[0].slot_name,"vehicle_rc":booking_obj[0].vehicle_rc}
+    return booking
+
+
 """ .filter(
         and_(
             current_time < Booking.end_time, current_time > Booking.start_time
