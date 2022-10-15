@@ -127,7 +127,7 @@ def register(payload: Payload, entity:str):
             raise HTTPException(status_code=404, detail="Car {car} has already been registered!".format(car = payload.car_rc))
         else:
             try :
-                database.register_car(payload.email, payload.password)
+                database.register_car(payload.email, payload.car_rc)
             except:
                 raise HTTPException(status_code=501, detail="Internal Server Error")
             return {
