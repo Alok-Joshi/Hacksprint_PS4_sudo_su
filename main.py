@@ -93,7 +93,8 @@ def slot_bookings(payload: BookingPayload):
         later = True
     if payload.slot_name is not None:
         val = parse_slot(payload.slot_name)
-        return database.book_slot(val["slot_id"],
+        try:
+            database.book_slot(val["slot_id"],
                                   payload.email,
                                   payload.car_rc,
                                   val["layout_id"],
@@ -101,6 +102,9 @@ def slot_bookings(payload: BookingPayload):
                                   payload.end_time,
                                   payload.pl_id,
                                   later)
+        except:
+            raise HTTPException(status_code=500, detail="Internal Server Error")
+
     else:
         raise HTTPException(status_code=404, detail="No slot_name Provided!")
 
