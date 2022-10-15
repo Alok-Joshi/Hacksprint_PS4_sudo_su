@@ -95,21 +95,16 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
     """
     Books the given slot
     return dictionary mentioning if given slot was alloted (selected_slot:False)
-
     """
-    # pdb.set_trace()
+    
     if(not later):
         session = Session(engine)
-        #first check if the given slot is available
-        db_output = session.query(Booking).filter(Booking.pl_id == pl_id).filter(Booking.layout_id == layout_id).filter(Booking.slot_name == slot_name).all()
-        if(len(db_output) == 0):
-            #this implies this particular slot is not booked yet. Now we book it by updating the booking table
-            booked_slot = Booking(slot_name = slot_name,email = email,vehicle_rc = vehicle_rc,layout_id =layout_id, pl_id =pl_id,start_time = start_time,end_time = end_time)
-            session.add(booked_slot)
-            session.commit()
+        booked_slot = Booking(slot_name = slot_name,email = email,vehicle_rc = vehicle_rc,layout_id =layout_id, pl_id =pl_id,start_time = start_time,end_time = end_time)
+        session.add(booked_slot)
+        session.commit()
 
-            return_dict = {"slot_name":slot_name,"email":email,"vehicle_rc":vehicle_rc,"layout_id":layout_id,"start_time":start_time,"end_time":end_time,"pl_id":pl_id,"later":later}
-            return return_dict
+        return_dict = {"slot_name":slot_name,"email":email,"vehicle_rc":vehicle_rc,"layout_id":layout_id,"start_time":start_time,"end_time":end_time,"pl_id":pl_id,"later":later}
+        return return_dict
 
     else:
        session = Session(engine)
