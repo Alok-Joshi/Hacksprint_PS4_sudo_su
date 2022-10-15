@@ -106,7 +106,8 @@ class _LaterReservationState extends State<LaterReservation> {
                       });
 
                   Navigator.pop(context);
-                } else {
+                }
+                else {
                   await showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(

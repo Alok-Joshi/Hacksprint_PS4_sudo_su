@@ -48,12 +48,15 @@ class BookingService {
     try {
       var res = await http.post(Uri.https(api_host, "bookings"),
           headers: {
-            "token" : user.uid!
+            "token" : user.uid!,
+            "Content-Type": "application/json"
           },
 
           body: jsonEncode({
             "email" : user.email,
             "car_rc" : rc,
+            "pl_id" : 1,
+            "slot_name" : "B1",
             "end_time" : endTime,
           })
       );
@@ -73,4 +76,20 @@ class BookingService {
     return false;
   }
 
+  Future<Map<String, dynamic>> myReservations(User user) async {
+    try {
+      var res = await http.get(Uri.https(api_host, "bookings/${user.email}"),
+      headers:  {
+        "token" : user.uid!
+      });
+
+      log(res.body);
+
+      return json.decode(res.body);
+    }catch(e) {
+      
+    }
+    
+    return {};
+  }
 }
