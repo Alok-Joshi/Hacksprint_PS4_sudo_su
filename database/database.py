@@ -96,7 +96,7 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
     Books the given slot
     return dictionary mentioning if given slot was alloted (selected_slot:False)
     """
-    
+
     if(not later):
         session = Session(engine)
         booked_slot = Booking(slot_name = slot_name,email = email,vehicle_rc = vehicle_rc,layout_id =layout_id, pl_id =pl_id,start_time = start_time,end_time = end_time)
@@ -118,6 +118,7 @@ def book_slot(slot_name,email,vehicle_rc,layout_id,start_time,end_time,pl_id = 1
            selected_slot = result[0]
            booked_slot = Booking(email = email,vehicle_rc = vehicle_rc, layout_id = selected_slot[0], slot_name = selected_slot[1],pl_id = selected_slot[2], start_time = start_time, end_time = end_time)
            session.add(booked_slot)
+           session.commit()
            return_dict = {"slot_name":selected_slot[1],"email":email,"vehicle_rc":vehicle_rc,"layout_id":selected_slot[0],"start_time":start_time,"end_time":end_time,"pl_id":selected_slot[2],"later":later}
 
            return return_dict
