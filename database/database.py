@@ -57,6 +57,7 @@ def register_car(email,vehicle_rc):
     vehicle_obj = Vehicle(owner = email, rc = vehicle_rc)
     session.add(vehicle_obj)
     session.commit()
+
 def get_car(email):
     session = Session(engine)
     vehicles = session.query(Vehicle).filter(Vehicle.owner == email).all()

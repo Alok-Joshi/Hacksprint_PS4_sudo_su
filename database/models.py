@@ -51,7 +51,7 @@ class Slot(Base):
 
 class Vehicle(Base):
       __tablename__ = "vehicles"
-      rc = Column(String(20),primary_key = True)
+      rc = Column(String(20),primary_key = True,nullable = False)
       owner = Column(String(100),ForeignKey("users.email"),nullable = False)
 
       def __repr__(self):
