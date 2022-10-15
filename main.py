@@ -87,6 +87,14 @@ def get_booking(user_id: str):
 def get_layout(pl_id: str):
     return convert_layout(database.layout(pl_id))
 
+@app.get("/vehicles/{user_id}", dependencies=[Depends(check_jwt_token)], status_code=200)
+def get_vehicles(user_id: str):
+    d = database.get_car(user_id)
+    return {
+        "user_id" : user_id,
+        "vehicles" : d
+    }
+
 @app.post("/login", status_code=200)
 def login(payload: Payload):
     if payload.password == None:
@@ -124,5 +132,4 @@ def register(payload: Payload, entity:str):
                 raise HTTPException(status_code=501, detail="Internal Server Error")
             return {
                 "message" : "Car was registered to {email} Succesfully!".format(email = payload.email),
-                "token" : get_jwt_token(payload.email)
             }
