@@ -96,6 +96,8 @@ def slot_bookings(payload: BookingPayload):
     later = False
     if payload.start_time != None :
         later = True
+    else:
+        payload.start_time = datetime.datetime.utcnow()
     if payload.slot_name is not None:
         val = parse_slot(payload.slot_name)
         try:
