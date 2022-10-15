@@ -46,6 +46,12 @@ def check_jwt_token(token : str = Header(None)):
     except:
         raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
 
+def convert_slot(slot_id: int, layout_id: int):
+    if slot_id != 0:
+        return str(chr(layout_id + ord('A'))) + str(slot_id)
+    else:
+        return 0
+
 def convert_layout(layout):
     dic = {}
     for i in range(len(layout)):
@@ -53,11 +59,7 @@ def convert_layout(layout):
             key = "layout"+str(i)
             if key not in dic.keys():
                 dic[key] = []
-            if layout[i][j] != 0:
-                dic[key].append(str(chr(i + ord('A'))) + str(layout[i][j]))
-            else:
-                dic[key].append(0)
-
+            dic[key].append(convert_slot(layout[i][j], i))
     return dic
 
 def parse_slot(slot_name: str):
@@ -79,12 +81,15 @@ def get_layouts(email):
 def get_upcoming_bookings(email_id: str, token : str  = Header(None)):
     try:
         a = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        if a["email"] != email_id:
-            raise HTTPException(status_code=404, detail="Unauthorised Email ID")
-        else:
-            return database.upcoming_bookings(email_id)
     except:
         raise HTTPException(status_code=404, detail="JWT_TOKEN_NOT_FOUND")
+    if a["email"] != email_id:
+        raise HTTPException(status_code=404, detail="Unauthorised Email ID")
+    else:
+        ub =  database.upcoming_bookings(email_id)
+        ub["slot_name"] = convert_slot(ub["slot_name"], ub["layout_id"])
+        ub["layout_id"] = str(chr(ub["layout_id"] + ord('A')))
+        return ub
 
 @app.post("/bookings", dependencies=[Depends(check_jwt_token)], status_code=200)
 def slot_bookings(payload: BookingPayload):
